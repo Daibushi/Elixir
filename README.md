@@ -1,3 +1,3 @@
 # Elixir
 
-Repositório para linguegm elixir
+Repositório para linguagem elixir
