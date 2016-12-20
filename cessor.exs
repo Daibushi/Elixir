@@ -15,6 +15,8 @@ cedido = 0
 #Acumulador de recebíveis
 receb_cedidos = []
 
+parcel = [7,8,9,10,11,12,6,5,4,3,2,1]
+
 #Load do módulo banco de dados onde estão disponíveis
 #os recebíveis a ser selecionados
 Code.load_file("banch.exs","./")
@@ -102,117 +104,58 @@ defmodule Cessor do
 end
 
 
+defmodule Process do 
+@moduledoc """
+	Função direcionadora 
+	##parameters
 
-# @TODO muitos erros ---- pensar mais
+	- list -> lista em forma de matriz
+				   [[identificador, preço, numero total de parcelas],[...]]
 
+	- parcel -> número total de parcelas
+	- total  -> total a ser cedido durante a execução do programa
+	- cedido -> valor cedido atualmente
 
-#defmodule Process do 
-#	def cessor_gw_out(parcels,n,size,list,cessor,cedido) when n >= size do
-#		IO.puts n
-#
-#	end
-#
-#	def cessor_gw_out(parcels,n,size,list,cessor,cedido) do
-#		
-#		receb_cedidos = []
-#		parcel = Enum.at(parcels,n)
-#		IO.puts parcel
-#		IO.puts "#{Enum.at(list,0)} #{parcel} #{cessor} #{cedido} "
-#		giveaway = Cessor.give_way(list,parcel,cessor,cedido)
-#		
-#		IO.puts "elem giveaway"
-#
-#		cessor_gw_out(parcels,n+1,size,list,cessor,cedido)
-#	end
-#end
+	##Example 
 
-#Process.cessor_gw_out(parcel,0,12,fixed_list,cessor_value,cedido)
+	[[9999,6622,2],[9998,3119,9],[9997,7941,10],[9996,9610,11]]
 
+	@return -> retorna uma tupla onde o primeiro valor é uma matriz dos
+				recebíveis cedidos e o segundo o valor total cedido
+		{[[identificador, preço, numero total de parcelas],[...]], valor total cedido}
+		
+	##Example 
+
+		{[60,97,14,47,67,56,44,22,83,94,49,69,42],9777}
+
+	"""
+
+	def cessor_gw_out(_parcels,n,size,_list,_cessor,cedido,acc) when n >= size do
+		{acc,cedido}
+	end
+
+	def cessor_gw_out(parcels,n,size,list,cessor,cedido,acc) do
+		
+		_receb_cedidos = []
+		parcel = Enum.at(parcels,n)
+
+		receb_cedidos = Cessor.give_way(list,parcel,cessor,cedido)
+		
+		if !Enum.empty?(elem(receb_cedidos,0)) do
+			cedido = elem(receb_cedidos,1)
+			acc = Enum.concat(elem(receb_cedidos,0), acc)
+		end
+
+		cessor_gw_out(parcels,n+1,size,list,cessor,cedido,acc)
+	end
+end
+
+temp = Process.cessor_gw_out(parcel,0,12,fixed_list,cessor_value,cedido,[])
+
+receb_cedidos = elem(temp,0)
+cedido = elem(temp,1)
 
 IO.puts "~~~~~~~~~~~~~Seletor e processador de recebíveis ~~~~~~~~~~~~~"
-		
-	giveaway = Cessor.give_way(fixed_list, 7,cessor_value,cedido)
-
-	cedido = elem(giveaway,1)
-	receb_cedidos = elem(giveaway,0)
-
-	giveaway = Cessor.give_way(fixed_list,8,cessor_value,cedido)
-
-	if !Enum.empty?(elem(giveaway,0)) do
-		cedido = elem(giveaway,1)
-		receb_cedidos = Enum.concat(elem(giveaway,0), receb_cedidos)
-	end
-
-	giveaway = Cessor.give_way(fixed_list,9,cessor_value,cedido)
-
-	if !Enum.empty?(elem(giveaway,0)) do
-		cedido = elem(giveaway,1)
-		receb_cedidos = Enum.concat(elem(giveaway,0), receb_cedidos)
-	end
-
-	giveaway = Cessor.give_way(fixed_list,10,cessor_value,cedido)
-
-	if !Enum.empty?(elem(giveaway,0)) do
-		cedido = elem(giveaway,1)
-		receb_cedidos = Enum.concat(elem(giveaway,0), receb_cedidos)
-	end
-
-	giveaway = Cessor.give_way(fixed_list,11,cessor_value,cedido)
-
-	if !Enum.empty?(elem(giveaway,0)) do
-		cedido = elem(giveaway,1)
-		receb_cedidos = Enum.concat(elem(giveaway,0), receb_cedidos)
-	end
-
-	giveaway = Cessor.give_way(fixed_list,12,cessor_value,cedido)
-
-	if !Enum.empty?(elem(giveaway,0)) do
-		cedido = elem(giveaway,1)
-		receb_cedidos = Enum.concat(elem(giveaway,0), receb_cedidos)
-	end
-
-	giveaway = Cessor.give_way(fixed_list,6,cessor_value,cedido)
-
-	if !Enum.empty?(elem(giveaway,0)) do
-		cedido = elem(giveaway,1)
-		receb_cedidos = Enum.concat(elem(giveaway,0), receb_cedidos)
-	end
-
-	giveaway = Cessor.give_way(fixed_list,5,cessor_value,cedido)
-
-	if !Enum.empty?(elem(giveaway,0)) do
-		cedido = elem(giveaway,1)
-		receb_cedidos = Enum.concat(elem(giveaway,0), receb_cedidos)
-	end
-
-	giveaway = Cessor.give_way(fixed_list,4,cessor_value,cedido)
-
-	if !Enum.empty?(elem(giveaway,0)) do
-		cedido = elem(giveaway,1)
-		receb_cedidos = Enum.concat(elem(giveaway,0), receb_cedidos)
-	end
-
-	giveaway = Cessor.give_way(fixed_list,3,cessor_value,cedido)
-
-	if !Enum.empty?(elem(giveaway,0)) do
-		cedido = elem(giveaway,1)
-		receb_cedidos = Enum.concat(elem(giveaway,0), receb_cedidos)
-	end
-
-	giveaway = Cessor.give_way(fixed_list,2,cessor_value,cedido)
-
-	if !Enum.empty?(elem(giveaway,0)) do
-		cedido = elem(giveaway,1)
-		receb_cedidos = Enum.concat(elem(giveaway,0), receb_cedidos)
-	end
-
-	giveaway = Cessor.give_way(fixed_list,1,cessor_value,cedido)
-
-	if !Enum.empty?(elem(giveaway,0)) do
-		cedido = elem(giveaway,1)
-		receb_cedidos = Enum.concat(elem(giveaway,0), receb_cedidos)
-	end
-	receb_cedidos = Enum.sort(receb_cedidos)
 
 	IO.puts "\n-->Valor máximo cedido : R$ #{cedido}\n"
 	
@@ -222,6 +165,7 @@ IO.puts "~~~~~~~~~~~~~Seletor e processador de recebíveis ~~~~~~~~~~~~~"
 	Enum.each(receb_cedidos, fn([a,_b,_c]) -> IO.write (" #{a},") end)
 	IO.write ("]")
 	IO.puts "\n============================================================\n\n"
-	
-
-
+#	
+#
+#
+#

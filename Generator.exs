@@ -4,9 +4,7 @@
 #Version 1.0
 
 	#Primeira versão totalmente funcional
-	#Sistema de parcelas descrito
-	#Próxima versão - consertar Process.cessor_gw_out
-	#Implementar recursividade
+	#Sistema de geraçao para banco de recebíveis 
 
 #total de recebíveis gerados
 recebiveis_total = 10000
@@ -15,6 +13,8 @@ show_io = true
 percent1 = 10
 percent2 = 80
 percent3 = 10
+
+file_name = "./banch.exs"
 
 
 defmodule Generate do
@@ -61,7 +61,7 @@ defmodule Generate do
 
 	#=======================================================
 	#Cria a lista de recebíveis a ser retoranada
-	def createList(qtd, _from, _to,n,list,x)when qtd < n do
+	def createList(qtd, _from, _to,n,list,_x)when qtd < n do
 		list
 	end
 
@@ -79,13 +79,15 @@ defmodule Generate do
 end
 
 	lista = []
-	IO.puts "Primeiros recebíveis"
+	#IO.puts "Primeiros recebíveis"
 	lista = Generate.recebiveis(percent1,recebiveis_total,50,700,lista,0)
 	lista = Generate.recebiveis(percent2,recebiveis_total,701,2000,lista,1000)
 	lista = Generate.recebiveis(percent3,recebiveis_total,2001,10000,lista,9000)
 
-	IO.puts "Size #{Enum.count(lista)}" 
+	#Escreve em arquivo 
 	
-	if show_io do
-		Enum.each(lista, fn([id,a,b]) -> IO.puts("[#{id},#{a},#{b}],")end)
-	end
+	
+		File.write file_name,"defmodule Banch do\n def load() do\n[",[:append]
+		Enum.each(lista, fn([id,a,b]) -> File.write(file_name,"[#{id},#{a},#{b}],",[:append])end)
+		File.write file_name,"] \nend\nend",[:append]
+	
