@@ -1,12 +1,10 @@
 #Programa seletor de recebíveis
 #@Author Jaderson Nascimento
 #@Data 19/12/2016
-#Version 1.0
+#Version 2.0
 
-	#Primeira versão totalmente funcional
-	#Sistema de parcelas descrito
-	#Próxima versão - consertar Process.cessor_gw_out
-	#Implementar recursividade
+	#Segunda versão totalmente funcional
+	
 
 #Valor para efetuar cessão
 cessor_value = 700000
@@ -106,19 +104,20 @@ end
 
 defmodule Process do 
 @moduledoc """
-	Função direcionadora 
+	Função processadora de saída 
 	##parameters
 
 	- list -> lista em forma de matriz
 				   [[identificador, preço, numero total de parcelas],[...]]
-
-	- parcel -> número total de parcelas
-	- total  -> total a ser cedido durante a execução do programa
+	- parcels -> lista de parcelas em ordem de menor perda para maior perda
 	- cedido -> valor cedido atualmente
+	- n ->      número controlador de iterações <deve ser 0> 
+	- acc -> acumulador de recebíveis
+	- total -> valor total a ceder
 
 	##Example 
 
-	[[9999,6622,2],[9998,3119,9],[9997,7941,10],[9996,9610,11]]
+	list = [[9999,6622,2],[9998,3119,9],[9997,7941,10],[9996,9610,11]]
 
 	@return -> retorna uma tupla onde o primeiro valor é uma matriz dos
 				recebíveis cedidos e o segundo o valor total cedido
@@ -130,23 +129,23 @@ defmodule Process do
 
 	"""
 
-	def cessor_gw_out(_parcels,n,size,_list,_cessor,cedido,acc) when n >= size do
+	def cessor_gw_out(_parcels,n,size,_list,_total,cedido,acc) when n >= size do
 		{acc,cedido}
 	end
 
-	def cessor_gw_out(parcels,n,size,list,cessor,cedido,acc) do
+	def cessor_gw_out(parcels,n,size,list,total,cedido,acc) do
 		
 		_receb_cedidos = []
 		parcel = Enum.at(parcels,n)
 
-		receb_cedidos = Cessor.give_way(list,parcel,cessor,cedido)
+		receb_cedidos = Cessor.give_way(list,parcel,total,cedido)
 		
 		if !Enum.empty?(elem(receb_cedidos,0)) do
 			cedido = elem(receb_cedidos,1)
 			acc = Enum.concat(elem(receb_cedidos,0), acc)
 		end
 
-		cessor_gw_out(parcels,n+1,size,list,cessor,cedido,acc)
+		cessor_gw_out(parcels,n+1,size,list,total,cedido,acc)
 	end
 end
 
@@ -163,7 +162,7 @@ IO.puts "~~~~~~~~~~~~~Seletor e processador de recebíveis ~~~~~~~~~~~~~"
 	IO.puts "Recebíveis Cedidos - #{Enum.count(receb_cedidos)}\n===================================================="
 	IO.write ("[")
 	Enum.each(receb_cedidos, fn([a,_b,_c]) -> IO.write (" #{a},") end)
-	IO.write ("]")
+	IO.write ("\b]")
 	IO.puts "\n============================================================\n\n"
 #	
 #
